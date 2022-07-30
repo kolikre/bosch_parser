@@ -14,11 +14,31 @@ def get_urls():
     return ulr_list
 
 
-def write_data_to_file(data):
+# def write_data_to_file(data):
 
-    with open("products_info.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerows(data)
+#     with open("products_info.csv", "w", newline="") as file:
+#         writer = csv.writer(file)
+#         writer.writerows(data)
+
+def save_csv(product_name, images, sku, replacing_codes, price, pack, stock, description):
+    csv_fields = ["Product name", "Image URLs", "SKU", "Replacing codes", "Price", "Pack", "Stock level", "Description"]
+
+    with open('product_data.csv', 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=csv_fields)
+
+        if f.tell() == 0:
+            writer.writeheader()
+
+        writer.writerow({
+            'Product name' : product_name,
+            'Image URLs' : images,
+            'SKU' : sku,
+            'Replacing codes' : replacing_codes,
+            'Price' : price,
+            'Pack' : pack,
+            'Stock level': stock,
+            'Description': description
+            })
 
 
 def parse_page(url: str = None):
@@ -54,6 +74,7 @@ def parse_page(url: str = None):
         # print(product_name)
     except:
         raw.append("")
+        product_name = ""
         print(f"Product_name is not found in {url}")
 
     # Images
@@ -65,6 +86,7 @@ def parse_page(url: str = None):
         # print(images)
     except:
         raw.append("")
+        images = ""
         print(f"Images not found in {url}")
 
     # Get SCU
@@ -74,6 +96,7 @@ def parse_page(url: str = None):
         # print(scu)
     except:
         raw.append("")
+        sku = ""
         print(f"SCU is not found in {url}")
 
     # Get Replacing codes
@@ -85,6 +108,7 @@ def parse_page(url: str = None):
         # print(replacing_codes)
     except:
         raw.append("")
+        replacing_codes = ""
         print(f"Replacing_codes is not found in {url}")
 
     # Price
@@ -94,6 +118,7 @@ def parse_page(url: str = None):
         # print(price)
     except:
         raw.append("")
+        price = ""
         print(f"Price is not found in {url}")
 
     # Pack
@@ -103,6 +128,7 @@ def parse_page(url: str = None):
         # print(pack)
     except:
         raw.append("")
+        pack = ""
         print(f"Pack is not found in {url}")
 
     # Stock
@@ -112,6 +138,7 @@ def parse_page(url: str = None):
         # print(stock)
     except:
         raw.append("")
+        stock = ""
         print(f"Stock is not found in {url}")
 
     # Description
@@ -125,18 +152,21 @@ def parse_page(url: str = None):
         # print(description)
     except:
         raw.append("")
+        description = ""
         print(f"Description is not found in {url}")
 
     print(f"SKU = {sku}, Name = {product_name}, URL = {url}")
 
-    return raw
+    save_csv(product_name=product_name, images=images, sku=sku, replacing_codes=replacing_codes, price=price, pack=pack, stock=stock, description=description)
+    # return 0
+    # return raw
 
 
 def start():
     
-    file_data = [
-            ["Product name", "Image URLs", "SKU", "Replacing codes", "Price", "Pack", "Stock level", "Description"]
-        ]
+    # file_data = [
+    #         ["Product name", "Image URLs", "SKU", "Replacing codes", "Price", "Pack", "Stock level", "Description"]
+    #     ]
 
     url_list = get_urls()
 
@@ -144,11 +174,12 @@ def start():
         product_data = parse_page(url)
         if product_data is None:
             continue
-        file_data.append(product_data)
+        # file_data.append(product_data)
     
-    write_data_to_file(file_data)
+    # write_data_to_file(file_data)
 
 
 if __name__ == "__main__":
+    open("product_data.csv", "w", newline="")
     start()
 
